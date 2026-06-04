@@ -6,6 +6,9 @@ from app.api.auth import router as auth_router
 from app.api.test_rbac import (
     router as rbac_router
 )
+from app.api.api_keys import (
+    router as api_key_router
+)
 
 # Initialize FastAPI app
 app = FastAPI(title="Your title", version="1.0")
@@ -27,7 +30,7 @@ app.include_router(
 
 app.include_router(auth_router)
 app.include_router(rbac_router)
-
+app.include_router(api_key_router)
 # Create database tables(if using)
 #Base.metadata.create_all(bind=engine)
 
