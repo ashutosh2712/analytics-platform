@@ -3,6 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 #from app.database import engine, Base
 from app.api.health import router as health_router
 from app.api.auth import router as auth_router
+from app.api.test_rbac import (
+    router as rbac_router
+)
 
 # Initialize FastAPI app
 app = FastAPI(title="Your title", version="1.0")
@@ -23,6 +26,7 @@ app.include_router(
 )
 
 app.include_router(auth_router)
+app.include_router(rbac_router)
 
 # Create database tables(if using)
 #Base.metadata.create_all(bind=engine)

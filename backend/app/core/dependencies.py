@@ -20,6 +20,11 @@ from app.repositories.user_repository import (
     UserRepository,
 )
 
+from app.models.enums import Role
+
+from app.repositories.membership_repository import (
+    MembershipRepository,
+)
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="/auth/login"
@@ -62,3 +67,56 @@ async def get_current_user(
 
     except Exception:
         raise credentials_exception
+    
+    
+async def get_current_membership(
+    current_user = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+
+    membership = (
+        await MembershipRepository.get_user_membership(
+            db=db,
+            user_id=current_user.id,
+        )
+    )
+
+    if not membership:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Membership not found",
+        )
+
+    return membership
+
+
+def require_role(
+    minimum_role: Role,
+):
+    hierarchy = {
+        Role.OWNER: 4,
+        Role.ADMIN: 3,
+        Role.ANALYST: 2,
+        Role.VIEWER: 1,
+    }
+
+    async def role_checker(
+        membership = Depends(
+            get_current_membership
+        )
+    ):
+
+        current_role = membership.role
+
+        if (
+            hierarchy[current_role]
+            < hierarchy[minimum_role]
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Insufficient permissions",
+            )
+
+        return membership
+
+    return role_checker
