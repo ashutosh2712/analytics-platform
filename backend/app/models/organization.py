@@ -14,6 +14,7 @@ class Organization(Base, TimestampMixin):
     memberships = relationship(
         "Membership",
         back_populates="organization",
+        lazy="selectin",
     )
 
     api_keys = relationship(

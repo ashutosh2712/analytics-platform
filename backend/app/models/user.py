@@ -20,4 +20,5 @@ class User(Base, TimestampMixin):
     memberships = relationship(
         "Membership",
         back_populates="user",
+        lazy="selectin",
     )

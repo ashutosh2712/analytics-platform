@@ -13,6 +13,18 @@ from app.services.auth_service import (
     AuthService,
 )
 
+from app.core.dependencies import (
+    get_current_user,
+)
+
+from app.schemas.auth import (
+    UserResponse,
+)
+
+from fastapi.security import (
+    OAuth2PasswordRequestForm,
+)
+
 router = APIRouter(
     prefix="/auth",
     tags=["Authentication"],
@@ -42,16 +54,23 @@ async def signup(
         )
 
 
+
 @router.post(
     "/login",
     response_model=TokenResponse,
 )
 async def login(
-    payload: LoginRequest,
+    form_data: OAuth2PasswordRequestForm = Depends(),
     db: AsyncSession = Depends(get_db),
 ):
 
     try:
+
+        payload = LoginRequest(
+            email=form_data.username,
+            password=form_data.password,
+        )
+
         return await AuthService.login(
             db=db,
             payload=payload,
@@ -62,3 +81,21 @@ async def login(
             status_code=401,
             detail=str(e),
         )
+        
+        
+@router.get(
+    "/me",
+    response_model=UserResponse,
+)
+async def get_me(
+    current_user = Depends(get_current_user),
+):
+
+    membership = current_user.memberships[0]
+
+    return UserResponse(
+        id=current_user.id,
+        email=current_user.email,
+        organization_id=membership.organization_id,
+        role=membership.role.value,
+    )
