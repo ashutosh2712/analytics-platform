@@ -13,6 +13,9 @@ from app.api.test_api_key import (
     router as test_api_key_router
 )
 
+from app.api.events import (
+    router as event_router
+)
 # Initialize FastAPI app
 app = FastAPI(title="Your title", version="1.0")
 
@@ -35,6 +38,7 @@ app.include_router(auth_router)
 app.include_router(rbac_router)
 app.include_router(api_key_router)
 app.include_router(test_api_key_router)
+app.include_router(event_router)
 
 # Create database tables(if using)
 #Base.metadata.create_all(bind=engine)
