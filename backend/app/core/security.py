@@ -19,3 +19,13 @@ def verify_password(
         plain_password,
         hashed_password,
     )
+    
+def verify_api_key(
+    raw_key: str,
+    hashed_key: str,
+) -> bool:
+
+    return pwd_context.verify(
+        raw_key,
+        hashed_key,
+    )

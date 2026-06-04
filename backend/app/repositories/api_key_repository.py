@@ -86,3 +86,16 @@ class ApiKeyRepository:
         await db.refresh(api_key)
 
         return api_key
+    
+    @staticmethod
+    async def get_all_active(
+        db: AsyncSession,
+    ):
+
+        result = await db.execute(
+            select(ApiKey).where(
+                ApiKey.is_active == True
+            )
+        )
+
+        return result.scalars().all()
