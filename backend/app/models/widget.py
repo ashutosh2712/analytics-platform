@@ -1,30 +1,51 @@
-from sqlalchemy import Enum, ForeignKey
-from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    ForeignKey,
+    DateTime,
+    func,
+)
+
+from sqlalchemy.orm import relationship
 
 from app.models.base import Base
-from app.models.enums import WidgetType
 
 
 class Widget(Base):
+
     __tablename__ = "widgets"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-
-    dashboard_id: Mapped[int] = mapped_column(
-        ForeignKey(
-            "dashboards.id",
-            ondelete="CASCADE",
-        )
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
     )
 
-    widget_type: Mapped[WidgetType] = mapped_column(
-        Enum(WidgetType)
+    dashboard_id = Column(
+        Integer,
+        ForeignKey("dashboards.id"),
+        nullable=False,
     )
 
-    config: Mapped[dict] = mapped_column(
-        JSONB,
-        default=dict,
+    title = Column(
+        String,
+        nullable=False,
+    )
+
+    chart_type = Column(
+        String,
+        nullable=False,
+    )
+
+    metric = Column(
+        String,
+        nullable=False,
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
     )
 
     dashboard = relationship(

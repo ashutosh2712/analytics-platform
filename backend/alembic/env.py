@@ -29,7 +29,15 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 from app.models.base import Base
-from app.models import *
+from app.models.user import User
+from app.models.organization import Organization
+from app.models.membership import Membership
+from app.models.api_key import ApiKey
+from app.models.event import Event
+from app.models.dashboard import Dashboard
+from app.models.widget import Widget
+
+import app.models
 
 target_metadata = Base.metadata
 

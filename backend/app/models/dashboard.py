@@ -1,29 +1,44 @@
-from sqlalchemy import ForeignKey, String
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    ForeignKey,
+    DateTime,
+    func,
+)
 
-from app.models.base import Base, TimestampMixin
+from sqlalchemy.orm import relationship
+
+from app.models.base import Base
 
 
-class Dashboard(Base, TimestampMixin):
+class Dashboard(Base):
+
     __tablename__ = "dashboards"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-
-    organization_id: Mapped[int] = mapped_column(
-        ForeignKey(
-            "organizations.id",
-            ondelete="CASCADE",
-        ),
+    id = Column(
+        Integer,
+        primary_key=True,
         index=True,
-        
     )
 
-    name: Mapped[str] = mapped_column(
-        String(255)
+    organization_id = Column(
+        Integer,
+        ForeignKey("organizations.id"),
+        nullable=False,
+    )
+
+    name = Column(
+        String,
+        nullable=False,
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
     )
 
     widgets = relationship(
         "Widget",
         back_populates="dashboard",
-        cascade="all, delete",
     )
