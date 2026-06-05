@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   db:
-    image: postgres
+    image: postgres:15
     container_name: analytics-db
     restart: always
 
@@ -24,6 +24,66 @@ services:
 
     ports:
       - "6379:6379"
+
+  backend:
+    build:
+      context: ./backend
+
+    container_name: analytics-backend
+
+    command: >
+      sh -c "
+      sleep 10 &&
+      alembic upgrade head &&
+      uvicorn app.main:app --host 0.0.0.0 --port 8000
+      "
+
+    volumes:
+      - ./backend:/app
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      - db
+      - redis
+
+    env_file:
+      - .env
+
+  celery:
+    build:
+      context: ./backend
+
+    container_name: analytics-celery
+
+    command: >
+      sh -c "
+      sleep 15 &&
+      celery -A app.workers.celery_app worker --pool=solo --loglevel=info
+      "
+
+    volumes:
+      - ./backend:/app
+
+    depends_on:
+      - backend
+      - redis
+
+    env_file:
+      - .env
+
+  frontend:
+    build:
+      context: ./frontend
+
+    container_name: analytics-frontend
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:
