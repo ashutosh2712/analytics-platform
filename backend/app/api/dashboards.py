@@ -132,3 +132,30 @@ async def delete_dashboard(
             status_code=404,
             detail=str(e),
         )
+        
+        
+@router.get(
+    "/{dashboard_id}/data",
+)
+async def get_dashboard_data(
+    dashboard_id: int,
+    membership = Depends(
+        require_role(Role.VIEWER)
+    ),
+    db: AsyncSession = Depends(get_db),
+):
+
+    try:
+
+        return await DashboardService.get_dashboard_data(
+            db=db,
+            organization_id=membership.organization_id,
+            dashboard_id=dashboard_id,
+        )
+
+    except ValueError as e:
+
+        raise HTTPException(
+            status_code=404,
+            detail=str(e),
+        )
