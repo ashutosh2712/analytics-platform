@@ -8,6 +8,8 @@ import Navbar from "@/components/Navbar";
 
 import ProtectedRoute from "@/components/ProtectedRoute";
 
+import { isOwner } from "@/lib/auth";
+
 const APIKeysPage = () => {
   const [keys, setKeys] = useState<any[]>([]);
 
@@ -114,23 +116,25 @@ ${response.data.key}`,
             <h1 className="text-3xl font-bold">API Key Management</h1>
           </div>
 
-          <div className="bg-white rounded-xl shadow-md p-6 mb-8 flex gap-4">
-            <input
-              type="text"
-              placeholder="API Key Name"
-              value={keyName}
-              onChange={(e) => setKeyName(e.target.value)}
-              className="flex-1 border rounded-lg px-4 py-3"
-            />
+          {isOwner() && (
+            <div className="bg-white rounded-xl shadow-md p-6 mb-8 flex gap-4">
+              <input
+                type="text"
+                placeholder="API Key Name"
+                value={keyName}
+                onChange={(e) => setKeyName(e.target.value)}
+                className="flex-1 border rounded-lg px-4 py-3"
+              />
 
-            <button
-              onClick={createKey}
-              disabled={loading}
-              className="bg-black text-white px-6 py-3 rounded-lg"
-            >
-              {loading ? "Creating..." : "Create API Key"}
-            </button>
-          </div>
+              <button
+                onClick={createKey}
+                disabled={loading}
+                className="bg-black text-white px-6 py-3 rounded-lg"
+              >
+                {loading ? "Creating..." : "Create API Key"}
+              </button>
+            </div>
+          )}
 
           {message && (
             <div className="bg-green-100 border border-green-300 text-green-800 p-4 rounded-lg mb-6 break-all">
@@ -174,21 +178,23 @@ ${response.data.key}`,
                         )}
                       </td>
 
-                      <td className="p-4 flex gap-2">
-                        <button
-                          onClick={() => rotateKey(key.id)}
-                          className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-                        >
-                          Rotate
-                        </button>
+                      {isOwner() && (
+                        <td className="p-4 flex gap-2">
+                          <button
+                            onClick={() => rotateKey(key.id)}
+                            className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+                          >
+                            Rotate
+                          </button>
 
-                        <button
-                          onClick={() => revokeKey(key.id)}
-                          className="bg-red-600 text-white px-4 py-2 rounded-lg"
-                        >
-                          Revoke
-                        </button>
-                      </td>
+                          <button
+                            onClick={() => revokeKey(key.id)}
+                            className="bg-red-600 text-white px-4 py-2 rounded-lg"
+                          >
+                            Revoke
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   ))}
               </tbody>

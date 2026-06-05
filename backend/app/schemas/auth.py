@@ -27,6 +27,8 @@ class TokenResponse(BaseModel):
     refresh_token: str
 
     token_type: str = "bearer"
+    
+    role: str
 
 
 class UserResponse(BaseModel):

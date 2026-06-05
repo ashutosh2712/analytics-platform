@@ -8,6 +8,9 @@ import Navbar from "@/components/Navbar";
 
 import ProtectedRoute from "@/components/ProtectedRoute";
 
+import { isOwner, isAdmin } from "@/lib/auth";
+` `;
+
 const IngestPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -71,44 +74,50 @@ const IngestPage = () => {
       <div className="min-h-screen bg-gray-100">
         <Navbar />
 
-        <div className="max-w-2xl mx-auto p-8">
-          <div className="bg-white rounded-xl shadow-md p-8">
-            <h1 className="text-3xl font-bold mb-6">CSV Event Upload</h1>
+        {isOwner() || isAdmin() ? (
+          <div className="max-w-2xl mx-auto p-8">
+            <div className="bg-white rounded-xl shadow-md p-8">
+              <h1 className="text-3xl font-bold mb-6">CSV Event Upload</h1>
 
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".csv"
-              onChange={handleFileChange}
-              className="hidden"
-            />
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".csv"
+                onChange={handleFileChange}
+                className="hidden"
+              />
 
-            <button
-              onClick={handleFileSelect}
-              className="bg-gray-200 px-6 py-3 rounded-lg mr-4"
-            >
-              Select CSV File
-            </button>
+              <button
+                onClick={handleFileSelect}
+                className="bg-gray-200 px-6 py-3 rounded-lg mr-4"
+              >
+                Select CSV File
+              </button>
 
-            <button
-              onClick={handleUpload}
-              disabled={loading}
-              className="bg-black text-white px-6 py-3 rounded-lg"
-            >
-              {loading ? "Uploading..." : "Upload CSV"}
-            </button>
+              <button
+                onClick={handleUpload}
+                disabled={loading}
+                className="bg-black text-white px-6 py-3 rounded-lg"
+              >
+                {loading ? "Uploading..." : "Upload CSV"}
+              </button>
 
-            {file && (
-              <p className="mt-4 text-sm text-gray-600">
-                Selected: {file.name}
-              </p>
-            )}
+              {file && (
+                <p className="mt-4 text-sm text-gray-600">
+                  Selected: {file.name}
+                </p>
+              )}
 
-            {message && <p className="mt-6 text-green-600">{message}</p>}
+              {message && <p className="mt-6 text-green-600">{message}</p>}
 
-            {error && <p className="mt-6 text-red-600">{error}</p>}
+              {error && <p className="mt-6 text-red-600">{error}</p>}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="bg-yellow-100 border border-yellow-300 p-6 rounded-lg">
+            You do not have permission to upload events.
+          </div>
+        )}
       </div>
     </ProtectedRoute>
   );

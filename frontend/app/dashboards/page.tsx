@@ -9,6 +9,8 @@ import Navbar from "@/components/Navbar";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Link from "next/dist/client/link";
 
+import { isOwner, isAdmin } from "@/lib/auth";
+
 const DashboardsPage = () => {
   const [dashboards, setDashboards] = useState<any[]>([]);
 
@@ -104,26 +106,28 @@ const DashboardsPage = () => {
             <h1 className="text-3xl font-bold">Dashboards</h1>
           </div>
 
-          <form
-            onSubmit={createDashboard}
-            className="bg-white p-6 rounded-xl shadow-md mb-8 flex gap-4"
-          >
-            <input
-              type="text"
-              placeholder="Dashboard Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="flex-1 border rounded-lg p-3"
-            />
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-black text-white px-6 rounded-lg"
+          {(isOwner() || isAdmin()) && (
+            <form
+              onSubmit={createDashboard}
+              className="bg-white p-6 rounded-xl shadow-md mb-8 flex gap-4"
             >
-              {loading ? "Creating..." : "Create"}
-            </button>
-          </form>
+              <input
+                type="text"
+                placeholder="Dashboard Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="flex-1 border rounded-lg p-3"
+              />
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="bg-black text-white px-6 rounded-lg"
+              >
+                {loading ? "Creating..." : "Create"}
+              </button>
+            </form>
+          )}
 
           {message && (
             <div className="bg-green-100 border border-green-300 text-green-800 p-4 rounded-lg mb-6">
@@ -150,12 +154,14 @@ const DashboardsPage = () => {
                     </h2>
                   </Link>
 
-                  <button
-                    onClick={() => deleteDashboard(dashboard.id)}
-                    className="bg-red-600 text-white px-4 py-2 rounded-lg"
-                  >
-                    Delete
-                  </button>
+                  {isOwner() && (
+                    <button
+                      onClick={() => deleteDashboard(dashboard.id)}
+                      className="bg-red-600 text-white px-4 py-2 rounded-lg"
+                    >
+                      Delete
+                    </button>
+                  )}
                 </div>
               ))}
           </div>

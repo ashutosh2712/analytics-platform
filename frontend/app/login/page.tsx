@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import api from "@/lib/api";
-import { saveToken } from "@/lib/auth";
+import { saveAuth } from "@/lib/auth";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -37,7 +37,13 @@ const LoginPage = () => {
         },
       });
 
-      saveToken(response.data.access_token);
+      saveAuth(
+        response.data.access_token,
+
+        response.data.refresh_token,
+
+        response.data.role,
+      );
 
       router.push("/dashboards");
     } catch (err: any) {

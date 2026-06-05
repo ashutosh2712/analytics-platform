@@ -46,6 +46,7 @@ class AuthService:
         )
 
         if existing_user:
+
             raise ValueError(
                 "User already exists"
             )
@@ -73,11 +74,13 @@ class AuthService:
             )
 
             # CREATE MEMBERSHIP
-            await MembershipRepository.create(
-                db=db,
-                user_id=user.id,
-                organization_id=organization.id,
-                role=Role.OWNER,
+            membership = (
+                await MembershipRepository.create(
+                    db=db,
+                    user_id=user.id,
+                    organization_id=organization.id,
+                    role=Role.OWNER,
+                )
             )
 
             # COMMIT TRANSACTION
@@ -93,13 +96,21 @@ class AuthService:
             )
 
             return TokenResponse(
+
                 access_token=access_token,
+
                 refresh_token=refresh_token,
+
+                token_type="bearer",
+
+                role=membership.role.value,
             )
 
-        except Exception:
+        except Exception as e:
+
             await db.rollback()
-            raise
+
+            raise e
 
     @staticmethod
     async def login(
@@ -126,6 +137,8 @@ class AuthService:
             raise ValueError(
                 "Invalid credentials"
             )
+            
+        membership = user.memberships[0]
 
         access_token = create_access_token(
             user.id
@@ -138,4 +151,5 @@ class AuthService:
         return TokenResponse(
             access_token=access_token,
             refresh_token=refresh_token,
+            role=membership.role,
         )
