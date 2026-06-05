@@ -11,7 +11,19 @@ import {
   Bar,
 } from "recharts";
 
-const WidgetCard = ({ widget }: any) => {
+import api from "@/lib/api";
+
+const WidgetCard = ({ widget, onDelete }: any) => {
+  const deleteWidget = async () => {
+    try {
+      await api.delete(`/widgets/${widget.id}`);
+
+      onDelete();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const renderContent = () => {
     if (widget.metric === "count") {
       return (
@@ -56,7 +68,16 @@ const WidgetCard = ({ widget }: any) => {
 
   return (
     <div className="bg-white rounded-xl shadow-md p-6">
-      <h2 className="text-xl font-semibold mb-6">{widget.title}</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-semibold">{widget.title}</h2>
+
+        <button
+          onClick={deleteWidget}
+          className="bg-red-600 text-white px-4 py-2 rounded-lg"
+        >
+          Delete
+        </button>
+      </div>
 
       {renderContent()}
     </div>

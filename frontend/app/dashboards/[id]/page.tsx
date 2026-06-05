@@ -138,7 +138,11 @@ const DashboardDetailPage = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {dashboardData.widgets.map((widget: any) => (
-            <WidgetCard key={widget.id} widget={widget} />
+            <WidgetCard
+              key={widget.id}
+              widget={widget}
+              onDelete={fetchDashboardData}
+            />
           ))}
         </div>
       </div>{" "}
