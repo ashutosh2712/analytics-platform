@@ -41,4 +41,5 @@ class Dashboard(Base):
     widgets = relationship(
         "Widget",
         back_populates="dashboard",
+        cascade="all, delete-orphan",
     )
