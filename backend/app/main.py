@@ -33,6 +33,10 @@ from app.api.widgets import (
     router as widget_router,
 )
 
+from app.api.uploads import (
+    router as uploads_router,
+)
+
 # Initialize FastAPI app
 app = FastAPI(title="Your title", version="1.0")
 
@@ -61,6 +65,7 @@ app.include_router(event_router)
 app.include_router(analytics_router)
 app.include_router(dashboard_router)
 app.include_router(widget_router)
+app.include_router(uploads_router)
 # Create database tables(if using)
 #Base.metadata.create_all(bind=engine)
 

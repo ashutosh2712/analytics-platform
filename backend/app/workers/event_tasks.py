@@ -6,6 +6,8 @@ from app.core.sync_database import (
 
 from app.models.event import Event
 
+import app.models
+
 from app.workers.celery_app import (
     celery_app,
 )

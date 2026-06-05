@@ -3,7 +3,15 @@ export const saveToken = (token: string) => {
 };
 
 export const getToken = () => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
   return localStorage.getItem("access_token");
+};
+
+export const isAuthenticated = () => {
+  return !!getToken();
 };
 
 export const logout = () => {
