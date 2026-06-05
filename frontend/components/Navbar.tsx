@@ -22,12 +22,16 @@ const Navbar = () => {
       </Link>
 
       <div className="flex gap-4 items-center">
-        <Link href="/dashboards" className="hover:underline">
-          Dashboards
+        <Link href="/settings/api-keys" className="hover:underline">
+          API Keys
         </Link>
 
         <Link href="/ingest" className="hover:underline">
           Ingest
+        </Link>
+
+        <Link href="/dashboards" className="hover:underline">
+          Dashboards
         </Link>
 
         <button
